@@ -24,7 +24,7 @@ def geraIndividuo(empresas):
     return proporcoes
 
 
-def cruzamento(mae, pai, qtdFIlhos=1):
+def cruzamento(mae, pai, qtdFIlhos=2):
     random.seed(random.random())
     cortes = [random.randrange(len(mae)-1) for x in range(2)]
     cortes.sort()
@@ -35,3 +35,4 @@ def cruzamento(mae, pai, qtdFIlhos=1):
     filhos.append(np.concatenate(partesPai[0], partesMae[1]))
     for f in filhos:
         fixSum(f)
+    return filhos
