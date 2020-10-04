@@ -1,11 +1,11 @@
 import csv
 import os
 
+companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
+COMPANYS = [x.split('-', 1)[0] for x in companys_files if '2014-2015' in x]
+
 
 def read_data2mov():
-    companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
-
-    companys = [x.split('-', 1)[0] for x in companys_files if '2014-2015' in x]
     companys_14_15_files = [x for x in companys_files if '2014-2015' in x]
 
     data = {}
