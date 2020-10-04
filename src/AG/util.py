@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from random import randrange
+from math import ceil
 
 
 def fixSum(individuo):
@@ -22,6 +22,15 @@ def geraIndividuo(empresas):
     while(sum(proporcoes) != 1.0):
         proporcoes[random.randrange(plen)] = random.randrange(100)/100
     return proporcoes
+
+
+def mutacao(individuo):
+    size = len(individuo)
+    qtd_mutacoes = random.randrange(ceil(size/3))
+    random.seed(random.random())
+    for i in range(qtd_mutacoes):
+        individuo[random.randrange(size-1)] = random.randrange(100)/100
+    fixSum(individuo)
 
 
 def cruzamento(mae, pai, qtdFIlhos=2):
