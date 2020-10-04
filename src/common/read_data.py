@@ -3,7 +3,7 @@ import os
 
 
 def read_data2mov():
-    companys_files = [x for x in os.listdir(os.getcwd() + '/src/common/')]
+    companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
 
     companys = [x.split('-', 1)[0] for x in companys_files if '2014-2015' in x]
     companys_14_15_files = [x for x in companys_files if '2014-2015' in x]
@@ -11,7 +11,7 @@ def read_data2mov():
     data = {}
     header = []
     for filename in companys_14_15_files:
-        path = os.getcwd() + '/src/common/' + filename
+        path = os.getcwd() + '/src/database/' + filename
         with open(path, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',')
             data[filename[:-4]] = []
