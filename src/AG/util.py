@@ -43,12 +43,17 @@ def fixSum(individuo):
         individuo[random.randrange(len(individuo))] += increase
 
 
-def geraIndividuo(empresas):
-    plen = len(empresas)
-    proporcoes = np.zeros(plen)
+def geraIndividuo(qtdElementos):
+    proporcoes = np.zeros(qtdElementos)
     while(np.sum(proporcoes) != 1.0):
-        proporcoes[random.randrange(plen)] = random.randrange(100)/100
+        proporcoes[random.randrange(qtdElementos)] = random.randrange(100)/100
     return proporcoes
+
+
+def geraPopulacao(qtdIndividuos, qtdElementos, populacao):
+    for i in range(qtdIndividuos):
+        individuo = geraIndividuo(qtdElementos)
+        populacao[str(individuo)] = individuo
 
 
 def mutacao(individuo):
