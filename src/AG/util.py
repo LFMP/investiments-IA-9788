@@ -3,8 +3,35 @@ import numpy as np
 from math import ceil
 
 
+def desempenho(empresa):
+    openValues = empresa[1]
+    highValues = empresa[2]
+    lowValues = empresa[3]
+    closeValues = empresa[4]
+    adjCloseValues = empresa[5]
+    volumeValues = empresa[6]
+    data = [np.array_split(openValues, 7), np.array_split(
+        highValues, 7), np.array_split(lowValues, 7), np.array_split(closeValues, 7), np.array_split(adjCloseValues, 7), np.array_split(volumeValues, 7)]
+    return np.ceil(np.multiply(np.add(np.subtract(data[3], data[0]), np.subtract(
+        data[1], data[2])), np.divide(data[5], np.subtract(data[3], data[4]))))
+
+
+def weigthEmpresas(empresas):
+    weights = []
+    for empresa in empresas:
+        weights.append(desempenho(empresa))
+    return weights
+
+
+def fitness(individuo, weights):
+    fitv = 0
+    for (index, value) in enumerate(individuo):
+        fitv += np.sum(np.multiply(weights[index], value))
+    return fitv/np.sum(individuo)
+
+
 def fixSum(individuo):
-    dist = sum(individuo)
+    dist = np.sum(individuo)
     if (dist > 1.0):
         discount = dist - 1.0
         for (index, value) in enumerate(individuo):
@@ -19,7 +46,7 @@ def fixSum(individuo):
 def geraIndividuo(empresas):
     plen = len(empresas)
     proporcoes = np.zeros(plen)
-    while(sum(proporcoes) != 1.0):
+    while(np.sum(proporcoes) != 1.0):
         proporcoes[random.randrange(plen)] = random.randrange(100)/100
     return proporcoes
 
