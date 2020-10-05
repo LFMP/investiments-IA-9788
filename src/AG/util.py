@@ -67,8 +67,12 @@ def cruzamento(mae, pai, qtdFIlhos=2):
     filhos = []
     partesMae = np.array_split(mae, cortes)
     partesPai = np.array_split(pai, cortes)
-    filhos.append(np.concatenate(partesMae[0], partesPai[1]))
-    filhos.append(np.concatenate(partesPai[0], partesMae[1]))
+    filhos.append(np.concatenate(partesPai[0], partesMae[1], partesMae[2]))
+    filhos.append(np.concatenate(partesMae[0], partesPai[1], partesPai[2]))
+    filhos.append(np.concatenate(partesMae[0], partesPai[1], partesMae[2]))
+    filhos.append(np.concatenate(partesPai[0], partesMae[1], partesPai[2]))
+    filhos.append(np.concatenate(partesMae[0], partesMae[1], partesPai[2]))
+    filhos.append(np.concatenate(partesPai[0], partesPai[1], partesMae[2]))
     for f in filhos:
         fixSum(f)
     return filhos
