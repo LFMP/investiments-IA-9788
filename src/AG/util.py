@@ -71,6 +71,22 @@ def mutacao(individuo):
     fixSum(individuo)
 
 
+def selecionaPais(populacao, qtdpassos):
+    pais = []
+    random.seed(random.random())
+    p0 = random.choice(populacao)
+    p1 = random.choice(populacao)
+    for i in range(qtdpassos):
+        aux = random.choice(populacao)
+        if(aux.ft > p0.ft):
+            p0 = aux
+        elif(aux.ft > p1.ft):
+            p1 = aux
+    pais.append(str(p0.vetor))
+    pais.append(str(p1.vetor))
+    return pais
+
+
 def cruzamento(mae, pai, w, qtdFIlhos=6):
     random.seed(random.random())
     cortes = [random.randrange(len(mae)-1) for x in range(2)]
