@@ -1,10 +1,9 @@
 import csv
 import os
 
-
 def read_data2mov():
     companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
-    companys = [x.split('-', 1)[0] for x in companys_files if '2014-2015' in x]
+    # companys = [x.split('-', 1)[0] for x in companys_files if '2014-2015' in x]
     companys_14_15_files = [x for x in companys_files if '2014-2015' in x]
 
     data = {}
@@ -26,7 +25,7 @@ def read_data2mov():
 
 def read_data2016():
     companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/2016_database/')]
-    companys = [x.split('.')[0] for x in companys_files if '.csv' in x]
+    # companys = [x.split('.')[0] for x in companys_files if '.csv' in x]
     companys_2016_files = [x for x in companys_files if '.csv' in x]
 
     data = {}
@@ -43,5 +42,10 @@ def read_data2016():
                         data[filename[:-4]][column_name] = []
                 else:
                     for (i, value) in enumerate(row):
-                        data[filename[:-4]][header[i]].append(value)
+                        if i == 0:
+                            data[filename[:-4]][header[i]].append(value)
+                        elif i in range(1,6):
+                            data[filename[:-4]][header[i]].append(float(value))
+                        else:
+                            data[filename[:-4]][header[i]].append(int(value))
     return data

@@ -6,7 +6,7 @@ import numpy as np
 def main():
   # Initializations
   data = read_data2016()
-  initialBalance = 100000
+  initialBalance = 100000.00
   weights = {}
   companies = list(data.keys())
   for comp in companies:
