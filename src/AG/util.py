@@ -47,18 +47,18 @@ def fixSum(individuo):
         individuo.vetor[random.randrange(len(individuo))] += increase
 
 
-def geraIndividuo(qtdElementos):
+def geraIndividuo(qtdElementos, w):
     proporcoes = np.zeros(qtdElementos)
     while(np.sum(proporcoes) != 1.0):
         proporcoes[random.randrange(qtdElementos)] = random.randrange(100)/100
     ind = Individuo(proporcoes)
-    ind.fitness()
+    ind.fitness(w)
     return ind
 
 
-def geraPopulacao(qtdIndividuos, qtdElementos, populacao):
+def geraPopulacao(qtdIndividuos, qtdElementos, populacao, w):
     for i in range(qtdIndividuos):
-        individuo = geraIndividuo(qtdElementos)
+        individuo = geraIndividuo(qtdElementos, w)
         populacao[str(individuo)] = individuo
 
 
@@ -71,7 +71,7 @@ def mutacao(individuo):
     fixSum(individuo)
 
 
-def cruzamento(mae, pai, qtdFIlhos=6):
+def cruzamento(mae, pai, w, qtdFIlhos=6):
     random.seed(random.random())
     cortes = [random.randrange(len(mae)-1) for x in range(2)]
     cortes.sort()
@@ -92,5 +92,5 @@ def cruzamento(mae, pai, qtdFIlhos=6):
         partesPai[0], partesPai[1], partesMae[2])))
     for i in range(qtdFIlhos):
         fixSum(filhos[i])
-        filhos[i].fitness()
+        filhos[i].fitness(w)
     return filhos
