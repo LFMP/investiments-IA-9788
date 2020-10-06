@@ -1,11 +1,10 @@
 import csv
 import os
 
-companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
-COMPANYS = [x.split('-', 1)[0] for x in companys_files if '2014-2015' in x]
-
 
 def read_data2mov():
+    companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
+    companys = [x.split('-', 1)[0] for x in companys_files if '2014-2015' in x]
     companys_14_15_files = [x for x in companys_files if '2014-2015' in x]
 
     data = {}
@@ -14,13 +13,13 @@ def read_data2mov():
         path = os.getcwd() + '/src/database/' + filename
         with open(path, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',')
-            data[filename[:-4]] = []
+            data[filename[:-8]] = []
             for (index, row) in enumerate(spamreader):
                 if(index == 0):
                     header = row
                     for column_name in header:
-                        data[filename[:-4]].append({column_name: []})
+                        data[filename[:-8]].append({column_name: []})
                 else:
                     for (i, value) in enumerate(row):
-                        data[filename[:-4]][i][header[i]].append(value)
+                        data[filename[:-8]][i][header[i]].append(value)
     return data
