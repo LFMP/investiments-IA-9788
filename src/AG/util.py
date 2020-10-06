@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import copy
 from math import ceil
 
 
@@ -8,6 +9,10 @@ class Individuo:
         self.vetor = vetor
         self.ft = ft
 
+    def __lt__(self, other): return self.ft > other.ft
+    def __eq__(self, other): return self.ft == other.ft
+    def __str__(self): return str(self.vetor)
+
     def fitness(self, weights):
         for (index, value) in enumerate(self.vetor):
             self.ft += np.sum(np.multiply(weights[index], value))
@@ -15,14 +20,10 @@ class Individuo:
 
 
 def desempenho(empresa):
-    openValues = empresa[1]
-    highValues = empresa[2]
-    lowValues = empresa[3]
-    closeValues = empresa[4]
-    adjCloseValues = empresa[5]
-    volumeValues = empresa[6]
-    data = [np.array_split(openValues, 7), np.array_split(
-        highValues, 7), np.array_split(lowValues, 7), np.array_split(closeValues, 7), np.array_split(adjCloseValues, 7), np.array_split(volumeValues, 7)]
+    data = [
+        np.array_split(empresa['Open'], 7), np.array_split(empresa['High'], 7),
+        np.array_split(empresa['Low'], 7), np.array_split(empresa['Close'], 7),
+        np.array_split(empresa['Adj Close'], 7), np.array_split(empresa['Volume'], 7)]
     return np.ceil(np.multiply(np.add(np.subtract(data[3], data[0]), np.subtract(
         data[1], data[2])), np.divide(data[5], np.subtract(data[3], data[4]))))
 
@@ -60,6 +61,17 @@ def geraPopulacao(qtdIndividuos, qtdElementos, populacao, w):
     for i in range(qtdIndividuos):
         individuo = geraIndividuo(qtdElementos, w)
         populacao[str(individuo)] = individuo
+
+
+def mutaPopulacao(populacao, qtd):
+    random.seed(random.random())
+    mortos = random.choices(populacao, k=qtd)
+    escolhidos = copy.deepcopy(mortos)
+    for individuo in mortos:
+        del populacao[str(individuo)]
+    for individuo in escolhidos:
+        mutacao(individuo)
+        populacao[str(individuo.vetor)] = individuo
 
 
 def mutacao(individuo):
