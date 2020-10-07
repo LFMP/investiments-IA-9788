@@ -1,24 +1,43 @@
+import operator
+import sys
+import os
+import numpy as np
+if(os.getcwd() not in sys.path):
+    sys.path.append(os.getcwd())
 from AG.util import cruzamento, geraPopulacao, mutaPopulacao, selecionaPais, weigthEmpresas
 from common.read_data import read_data2mov
 
 
 def buscaGenetica():
     data = read_data2mov()
+    empresas = list(data.keys())
     w = weigthEmpresas(data)
     lenIndividuos = len(data)
     populacao = {}
     geraPopulacao(40, lenIndividuos, populacao, w)
     for i in range(300):
         pais = selecionaPais(populacao, 20)
-        filhos = cruzamento(populacao[pais[0]], populacao[pais[1]], w)
-        melhores = sorted(populacao, key=populacao.get, reverse=True)[:10]
+        filhos = cruzamento(pais[0], pais[1], w)
+        inseridos = 0
         for f in filhos:
-            for m in melhores:
-                if(f.ft > m.ft):
-                    try:
-                        del populacao[str(m.vetor)]
-                        populacao[str(f.vetor)] = f
-                    except Exception:
-                        print('deu merda')
-        mutaPopulacao(populacao, len(populacao)/10)
-    print(max(populacao, key=lambda key: populacao[key]))
+            if str(f) not in populacao:
+                inseridos += 1
+                populacao[str(f)] = f
+        if inseridos > 0:
+            piores = []
+            for element in sorted(populacao.items(), key=lambda x: x[1], reverse=False)[:inseridos]:
+                piores.append(element[1])
+            for p in range(len(piores)):
+                del populacao[str(piores[p])]
+        mutaPopulacao(populacao, int(len(populacao)/6))
+        # print(sorted(populacao.items(),
+        #              key=lambda x: x[1], reverse=True)[:1][0][1])
+    melhor = sorted(populacao.items(),
+                    key=lambda x: x[1], reverse=True)[:1][0][1]
+    otimo = {}
+    for i in range(lenIndividuos):
+        otimo[empresas[i]] = melhor.vetor[i]
+    return otimo
+
+
+print(buscaGenetica())
