@@ -12,21 +12,21 @@ def read_data2mov():
         path = os.getcwd() + '/database/' + filename
         with open(path, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',')
-            data[filename[:-8]] = {}
+            data[filename[:-14]] = {}
             for (index, row) in enumerate(spamreader):
                 if(index == 0):
                     header = row
                     for column_name in header:
-                        data[filename[:-8]][column_name] = []
+                        data[filename[:-14]][column_name] = []
                 else:
                     for (i, value) in enumerate(row):
                         if (i != 0):
-                            data[filename[:-8]][header[i]].append(float(value))
+                            data[filename[:-14]][header[i]].append(float(value))
                         else:
-                            data[filename[:-8]][header[i]].append(value)
+                            data[filename[:-14]][header[i]].append(value)
         for name in header:
-            data[filename[:-8]][name] = np.array(
-                data[filename[:-8]][name]).flatten()
+            data[filename[:-14]][name] = np.array(
+                data[filename[:-14]][name]).flatten()
     return data
 
 def read_data2016():
