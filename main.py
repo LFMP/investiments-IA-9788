@@ -1,12 +1,11 @@
 from src.simulator.util import simulator
 from src.common.read_data import read_data2016
-import numpy as np
 
 
 def main():
   # Initializations
   data = read_data2016()
-  initialBalance = 100000.00
+  initialBalance = 100000.00 * 4.038         # Cotação do Dólar em 04/01/2016
   weights = {}
   companies = list(data.keys())
   for comp in companies:
