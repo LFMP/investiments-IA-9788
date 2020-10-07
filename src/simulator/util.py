@@ -12,7 +12,8 @@ def calcIndicators(data: dict, company: str):
   df = pd.DataFrame(adaptedData, columns=['High', 'Low', 'Close'])
   stochSignal = ta.momentum.stoch_signal(df['High'], df['Low'], df['Close'])
   rsi = ta.momentum.rsi(df['Close'])
-  return list(stochSignal), list(rsi)
+  roc = ta.momentum.roc(df['Close'], n=14)
+  return list(stochSignal), list(rsi), list(roc)
 
 def initWallets(companies: list, weights: dict, initialBalance: int):
   initialWallet = {}
@@ -102,9 +103,10 @@ def simulator(data: dict, weights: dict, initialBalance: int):
 
   # Calc Stoch Signal
   for comp in companies:
-    stochSignal, rsi = calcIndicators(data, comp)
+    stochSignal, rsi, roc = calcIndicators(data, comp)
     data[comp]['StochSignal'] = stochSignal
     data[comp]['RSI'] = rsi
+    data[comp]['ROC'] = roc
 
   # Daily loop
   dateList = data[companies[0]]['Date']
@@ -115,18 +117,25 @@ def simulator(data: dict, weights: dict, initialBalance: int):
         # Doing stocks exchanges
         ssi = data[comp]['StochSignal'][i]
         rsi = data[comp]['RSI'][i]
-        if ssi < 20 and rsi < 30:
+        roc = data[comp]['ROC'][i]
+        # Buying
+        if ssi < 20 and rsi < 30 and roc < -5:
           ssiBuy = (20-ssi)/20
           rsiBuy = (30-rsi)/30
           exchangeMoney = (ssiBuy + rsiBuy)/2 * splittedWallet[comp]
-          splittedWallet[comp] -= exchangeMoney
-          investedWallet[comp] += exchangeMoney
-        elif ssi > 80 and rsi > 70:
+          n_stocks = exchangeMoney // data[comp]['Close'][i]
+          adjustedValue = n_stocks * data[comp]['Close'][i]
+          splittedWallet[comp] -= adjustedValue
+          investedWallet[comp] += adjustedValue
+        # Selling
+        elif ssi > 80 and rsi > 70 and roc > 5:
           ssiSell = (ssi-80)/20
           rsiSell = (rsi-70)/30
           exchangeMoney = (ssiSell + rsiSell)/2 * investedWallet[comp]
-          investedWallet[comp] -= exchangeMoney
-          splittedWallet[comp] += exchangeMoney
+          n_stocks = exchangeMoney // data[comp]['Close'][i]
+          adjustedValue = n_stocks * data[comp]['Close'][i]
+          investedWallet[comp] -= adjustedValue
+          splittedWallet[comp] += adjustedValue
 
         # Updating stocks values
         if i > 0:
