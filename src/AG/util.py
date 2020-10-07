@@ -21,9 +21,8 @@ class Individuo:
 
     def fitness(self, weights):
         for (index, value) in enumerate(self.vetor):
-            for arr in np.dot(weights[index], value):
-                self.ft += np.sum(np.sum(arr))
-        self.ft = self.ft/np.sum(self.vetor)
+            self.ft += weights[index]*value
+        self.ft = self.ft/np.sum(weights)
 
 
 def desempenho(empresa):
@@ -31,25 +30,13 @@ def desempenho(empresa):
         np.array_split(empresa['Open'], 7), np.array_split(empresa['High'], 7),
         np.array_split(empresa['Low'], 7), np.array_split(empresa['Close'], 7),
         np.array_split(empresa['Adj Close'], 7), np.array_split(empresa['Volume'], 7)]
-    return np.multiply(
-        np.add(
-            np.subtract(data[3], data[0]),
-            np.subtract(data[1], data[2])),
-        np.divide(
-            data[5],
-            np.subtract(
-                data[3],
-                data[4]
-            )
-        )
-    )
-
+    return ((data[1][len(data[1])-1][-1] - data[2][len(data[2])-1][0])*2 - ((data[0][len(data[0])-1][-1]) - (data[3][len(data[3])-1][0])))*(sum(data[5][len(data[5])-1] - data[5][0][1:]))
 
 def weigthEmpresas(empresas):
     weights = []
     for key in empresas:
         weights.append(desempenho(empresas[key]))
-    return sorted(weights, key=len)
+    return sorted(weights)
 
 
 def fixSum(individuo):

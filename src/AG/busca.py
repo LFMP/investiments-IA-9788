@@ -14,8 +14,8 @@ def buscaGenetica():
     w = weigthEmpresas(data)
     lenIndividuos = len(data)
     populacao = {}
-    geraPopulacao(40, lenIndividuos, populacao, w)
-    for i in range(300):
+    geraPopulacao(2000, lenIndividuos, populacao, w)
+    for i in range(1000):
         pais = selecionaPais(populacao, 20)
         filhos = cruzamento(pais[0], pais[1], w)
         inseridos = 0
