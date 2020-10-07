@@ -15,18 +15,20 @@ def buscaGenetica():
     lenIndividuos = len(data)
     populacao = {}
     geraPopulacao(40, lenIndividuos, populacao, w)
-    for i in range(50):
+    for i in range(300):
         pais = selecionaPais(populacao, 20)
         filhos = cruzamento(pais[0], pais[1], w)
-        melhores = []
-        for element in sorted(populacao.items(), key=lambda x: x[1], reverse=True)[:10]:
-            melhores.append(element[1])
+        inseridos = 0
         for f in filhos:
-            for m in melhores:
-                if(f.ft > m.ft):
-                    if (str(m) in populacao):
-                        del populacao[str(m)]
-                    populacao[str(f)] = f
+            if str(f) not in populacao:
+                inseridos += 1
+                populacao[str(f)] = f
+        if inseridos > 0:
+            piores = []
+            for element in sorted(populacao.items(), key=lambda x: x[1], reverse=False)[:inseridos]:
+                piores.append(element[1])
+            for p in range(len(piores)):
+                del populacao[str(piores[p])]
         mutaPopulacao(populacao, int(len(populacao)/6))
         # print(sorted(populacao.items(),
         #              key=lambda x: x[1], reverse=True)[:1][0][1])
@@ -36,3 +38,6 @@ def buscaGenetica():
     for i in range(lenIndividuos):
         otimo[empresas[i]] = melhor.vetor[i]
     return otimo
+
+
+print(buscaGenetica())

@@ -3,6 +3,8 @@ import numpy as np
 import copy
 from math import ceil
 
+from numpy.core.defchararray import count
+
 
 class Individuo:
     def __init__(self, vetor, ft=0):
@@ -11,7 +13,8 @@ class Individuo:
 
     def __lt__(self, other): return self.ft > other.ft
     def __gt__(self, other): return self.ft < other.ft
-    def __eq__(self, other): return self.ft == other.ft
+    def __eq__(self, other): return self.vetor == other.vetor
+    def __ne__(self, other): return self.vetor != other.vetor
     def __add__(self, other): return self.ft + other.ft
     def __sub__(self, other): return self.ft - other.ft
     def __str__(self): return np.array2string(self.vetor)
@@ -53,11 +56,7 @@ def fixSum(individuo):
     while(np.sum(individuo.vetor) != 1.0):
         dist = np.sum(individuo.vetor)
         if (dist > 1.0):
-            discount = dist - 1.0
-            for (index, value) in enumerate(individuo.vetor):
-                if(value >= discount):
-                    individuo.vetor[index] = value - discount
-                    break
+            individuo.vetor[np.argmax(individuo.vetor)] = 0.0
         elif(dist < 1.0):
             increase = 1.0 - dist
             individuo.vetor[random.randrange(len(individuo.vetor))] += increase
@@ -79,43 +78,51 @@ def geraPopulacao(qtdIndividuos, qtdElementos, populacao, w):
         populacao[str(individuo)] = individuo
 
 
-def mutaPopulacao(populacao, qtd):
-    random.seed(random.random())
-    mortos = []
-    for i in random.choices(list(populacao.keys()), k=qtd):
-        mortos.append(populacao[i])
-    escolhidos = copy.deepcopy(mortos)
-    for individuo in mortos:
-        if str(individuo) in populacao:
-            del populacao[str(individuo)]
-    for individuo in escolhidos:
-        mutacao(individuo)
-        populacao[str(individuo)] = individuo
-
-
 def mutacao(individuo):
     size = len(individuo.vetor)
     qtd_mutacoes = random.randrange(ceil(size/3))
     random.seed(random.random())
+    nindividuo = copy.deepcopy(individuo)
     for i in range(qtd_mutacoes):
-        individuo.vetor[random.randrange(size-1)] = random.randrange(10)/100
-    fixSum(individuo)
+        nindividuo.vetor[random.randrange(size-1)] = random.randrange(10)/100
+    fixSum(nindividuo)
+    return nindividuo
+
+
+def mutaPopulacao(populacao, qtd):
+    mortos = []
+    escolhidos = []
+    count = 0
+    for i in random.choices(list(populacao.keys()), k=qtd):
+        escolhidos.append(populacao[i])
+    for individuo in escolhidos:
+        nid = mutacao(individuo)
+        if(str(nid) not in populacao):
+            populacao[str(nid)] = nid
+            count += 1
+    for i in sorted(populacao.items(), key=lambda x: x[1], reverse=False)[:count]:
+        mortos.append(i[1])
+    for i in range(len(mortos)):
+        del populacao[str(mortos[i])]
 
 
 def selecionaPais(populacao, qtdpassos):
     random.seed(random.random())
-    p0 = populacao[random.choice(list(populacao.keys()))]
-    p1 = populacao[random.choice(list(populacao.keys()))]
-    for i in range(qtdpassos):
-        aux = populacao[random.choice(list(populacao.keys()))]
-        if(aux.ft > p0.ft):
-            p0 = aux
-        elif(aux.ft > p1.ft):
-            p1 = aux
-    return [p0, p1]
+    pais = []
+    for element in sorted(populacao.items(), key=lambda x: x[1], reverse=True)[:2]:
+        pais.append(element[1])
+    # p0 = pais[0]
+    # p1 = pais[1]
+    # for i in range(qtdpassos):
+    #     aux = populacao[random.choice(list(populacao.keys()))]
+    #     if(aux.ft > p0.ft):
+    #         p0 = aux
+    #     elif(aux.ft > p1.ft):
+    #         p1 = aux
+    return pais
 
 
-def cruzamento(mae, pai, w, qtdFIlhos=6):
+def cruzamento(mae, pai, w):
     random.seed(random.random())
     cortes = [random.randrange(len(mae.vetor)-1) for x in range(2)]
     cortes.sort()
@@ -134,7 +141,7 @@ def cruzamento(mae, pai, w, qtdFIlhos=6):
         (partesMae[0], partesMae[1], partesPai[2]))))
     filhos.append(Individuo(np.concatenate(
         (partesPai[0], partesPai[1], partesMae[2]))))
-    for i in range(qtdFIlhos):
+    for i in range(len(filhos)):
         fixSum(filhos[i])
         filhos[i].fitness(w)
     return filhos
