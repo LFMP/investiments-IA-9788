@@ -4,8 +4,8 @@ import os
 import numpy as np
 if(os.getcwd() not in sys.path):
     sys.path.append(os.getcwd())
-from AG.util import cruzamento, geraPopulacao, mutaPopulacao, selecionaPais, weigthEmpresas
-from common.read_data import read_data2mov
+from src.AG.util import cruzamento, geraPopulacao, mutaPopulacao, selecionaPais, weigthEmpresas
+from src.common.read_data import read_data2mov
 
 
 def buscaGenetica():
@@ -40,4 +40,4 @@ def buscaGenetica():
     return otimo
 
 
-print(buscaGenetica())
+# print(buscaGenetica())

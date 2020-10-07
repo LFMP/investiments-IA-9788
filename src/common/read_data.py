@@ -3,13 +3,13 @@ import os
 import numpy as np
 
 def read_data2mov():
-    companys_files = [x for x in os.listdir(os.getcwd() + '/database/')]
+    companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
     companys_14_15_files = [x for x in companys_files if '2014-2015' in x]
 
     data = {}
     header = []
     for filename in companys_14_15_files:
-        path = os.getcwd() + '/database/' + filename
+        path = os.getcwd() + '/src/database/' + filename
         with open(path, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',')
             data[filename[:-18]] = {}

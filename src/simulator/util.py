@@ -39,8 +39,12 @@ def totalProfit(companies: list, startWallet: dict, endWallet: dict):
 def mostLeastProfitComp(companies: list, startWallet: dict, endWallet: dict):
   first = True
   for comp in companies:
-    profit = endWallet[comp] - startWallet[comp]
-    profitPC = profit / startWallet[comp] * 100
+    if startWallet[comp] == 0:
+      profit = 0
+      profitPC = 0
+    else:
+      profit = endWallet[comp] - startWallet[comp]
+      profitPC = profit / startWallet[comp] * 100
     if first:
       mostProfitComp = comp
       mostProfit = profit
@@ -66,13 +70,23 @@ def mostLeastProfitComp(companies: list, startWallet: dict, endWallet: dict):
           'leastProfitPC': leastProfitPC}
   
 def printInfos(i: int, companies: list, splittedWallet1: dict, investedWallet1: dict, splittedWallet2: dict, investedWallet2: dict):
+  # Merging Wallets
+  startWallet = Counter(splittedWallet1)
+  startWallet1 = Counter(investedWallet1)
+  startWallet.update(startWallet1)
+  endWallet = Counter(splittedWallet2)
+  endWallet1 = Counter(investedWallet2)
+  endWallet.update(endWallet1)
+
   print("------------- Resultado Mês", i, "-------------")
   print()
-  balanceInfos = totalProfit(companies, dict(Counter(splittedWallet1) + Counter(investedWallet1)), dict(Counter(splittedWallet2) + Counter(investedWallet2)))
+
+  balanceInfos = totalProfit(companies, dict(startWallet), dict(endWallet))
   print("Saldo inicial: \tR${:.2f}" .format(balanceInfos['initialBalance']))
   print("Saldo final: \tR${:.2f}" .format(balanceInfos['finalBalance']))
   print("Variação: \tR${:.2f} ({:.2f}%)" .format(balanceInfos['profit'], balanceInfos['profitPC']))
-  compInfos = mostLeastProfitComp(companies, dict(Counter(splittedWallet1) + Counter(investedWallet1)), dict(Counter(splittedWallet2) + Counter(investedWallet2)))
+
+  compInfos = mostLeastProfitComp(companies, dict(startWallet), dict(endWallet))
   print("Empresa mais lucrativa: ", compInfos['mostProfitComp'], "-> R${:.2f} ({:.2f}%)" .format(compInfos['mostProfit'], compInfos['mostProfitPC']))
   print("Empresa menos lucrativa:", compInfos['leastProfitComp'], "-> R${:.2f} ({:.2f}%)" .format(compInfos['leastProfit'], compInfos['leastProfitPC']))
   print()
