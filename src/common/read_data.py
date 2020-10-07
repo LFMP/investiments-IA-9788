@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 def read_data2mov():
-    companys_files = [x for x in os.listdir(os.getcwd() + '/database/')]
+    companys_files = [x for x in os.listdir(os.getcwd() + '/src/database/')]
     companys_14_15_files = [x for x in companys_files if '2014-2015' in x]
 
     data = {}
@@ -27,7 +27,6 @@ def read_data2mov():
         for name in header:
             data[filename[:-8]][name] = np.array(
                 data[filename[:-8]][name]).flatten()
-
     return data
 
 def read_data2016():
